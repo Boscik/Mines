@@ -3,20 +3,37 @@
 #include <stdlib.h>
 #include <time.h>
 
-static const int width = 8;
-static const int height = 10;
+#define BOARD_SIZE (16*8)
+
+static const int width = 16;
+static const int height = 8;
 
 static const int tile_size = 3;
+char board[BOARD_SIZE];
 
-void set_bombs(WINDOW * win, int arg_count) {
-    srand(time(NULL));
+void set_board(char c) {
     int i;
-    for(i = 0; i < arg_count; i++) {
+    for(i = 0; i < sizeof(board)/sizeof(char); i++) {
+        board[i] = c;
+    }
+}
+
+void set_mines(WINDOW * win, int arg_count) {
+    srand(time(NULL));
+
+    set_board(' ');
+
+    int counter = 0;
+    while (counter < arg_count) {
         int pos = rand() % (width*height + 1);
-        WINDOW * tile = subwin(win, tile_size, tile_size, (pos%height)*tile_size, (pos/height)*tile_size);
-        printf("\r %d %d\n", (pos%height)*tile_size, (pos%height)*tile_size);
+        if(board[pos] != 'x') {
+            board[pos] = 'x';
+            counter++;
+        }
+        
+        /* WINDOW * tile = subwin(win, tile_size, tile_size, (pos%height)*tile_size, (pos/height)*tile_size);
         box(tile, 0, 0);
-        mvwaddstr(tile, 1, 1, "x");
+        mvwaddstr(tile, 1, 1, "x"); */
     }
 }
 
@@ -39,21 +56,30 @@ int main(int argc, char *argv[]) {
         attron(COLOR_PAIR(1));
     }
 
+    set_mines(mainwin, 8);
+
     int i;
-    int j;
-    for(i = 0; i < width; i++) {
-        for(j = 0; j < height; j++) {
-            /* // Create subwidow for each board tile 
-            // WINDOW * tile = subwin(mainwin, tile_size, tile_size, j*tile_size, i*tile_size);
-            // Create box to draw the tile
-            // box(tile, 0, 0);
-            // Set text of the tile
-            // mvwaddstr(tile, 1, 1, "x"); */
-        }
+    for(i = 0; i < width*height; i++) {
+        int y = i%width;
+        int x = i/width;
+
+        char c[1];
+        c[0] = board[i];
+
+        /* printf("\r%d - %d\n", y, x); */
+
+        /* Create subwidow for each board tile */
+        WINDOW * tile = subwin(mainwin, tile_size, tile_size, x*tile_size, y*tile_size);
+        /* Create box to draw the tile */
+        box(tile, 0, 0);
+        /* Set text of the tile */
+        mvwaddstr(tile, 1, 1, c);
     }
-    set_bombs(mainwin, 8);
+
+    
     refresh();
     getch();
+    sleep(30);
     endwin();
     echo();
 }
