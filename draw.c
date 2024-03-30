@@ -48,4 +48,6 @@ void terminate_screen(screen_t *screen) {
     for(i = 0; i < screen->game->board_size; i++) {
         delwin(screen->tiles[i]);
     }
+    free(screen->tiles);
+    free(screen);
 }

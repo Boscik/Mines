@@ -69,5 +69,6 @@ void set_numbers_around(game_t *game, int position) {
 
 void play_position(game_t *game, int arg_pos) {}
 void terminate_game(game_t *game) {
+    free(game->board);
     free(game);
 }
