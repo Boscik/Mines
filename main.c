@@ -48,7 +48,6 @@ void set_mines(WINDOW * win, int arg_count) {
             board[pos] = 'x';
             set_numbers_around(pos);
             counter++;
-            printf("\rpos %d\n", pos);
         }
         /* printf("\rCounter %d\n", counter); */
     }
@@ -94,8 +93,9 @@ int main(int argc, char *argv[]) {
         if(c[0] == 'x') {
             wattron(tile, COLOR_PAIR(2));
         } else {
-            wattron(tile, COLOR_PAIR(c[0]-'0'+3));
-            printf("\r%d\n", c[0]-'0'+3);
+            int color_pair_index = ((c[0]-'0')%4)+3;
+            printf("\rcolor pair: %d\n", color_pair_index);
+            wattron(tile, COLOR_PAIR(color_pair_index));
         }
 
         /* Create box to draw the tile */
