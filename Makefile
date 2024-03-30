@@ -25,4 +25,4 @@ leak-check: compile
         --track-origins=yes \
 		--show-reachable=no \
         --verbose \
-		./output/main
+		echo q > ./output/main
