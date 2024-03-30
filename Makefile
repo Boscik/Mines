@@ -7,7 +7,7 @@ game.c \
 
 C_FLAGS = \
 -ansi \
-#-g \
+-g \
 
 compile:
 	cc -o main $(Filelist) -lncurses $(C_FLAGS)
