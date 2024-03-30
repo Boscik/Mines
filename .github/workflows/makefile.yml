@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: dependency
+      run: sudo apt-get -y install valgrind
 
     - name: Make
       run: make
