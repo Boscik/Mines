@@ -1,4 +1,4 @@
-Filelist = \
+FILELIST = \
 main.c \
 draw.h \
 draw.c \
@@ -10,23 +10,19 @@ C_FLAGS = \
 -g \
 
 compile:
-	cc -o main $(Filelist) -lncurses $(C_FLAGS)
+	mkdir -p output
+	cc -o output/main $(FILELIST) -lncurses $(C_FLAGS)
 
 clean:
-	rm main
+	rm output/*
 
 run: compile
-	./main
-
-debug:
-	cc -o main main.c -lncurses -ansi -ggdb
-	gdb ./main
+	./output/main
 
 leak-check: compile
-	valgrind --leak-check=full \
+	valgrind --leak-check=yes \
         --show-leak-kinds=all \
         --track-origins=yes \
 		--show-reachable=no \
         --verbose \
-        --log-file=valgrind-out.valgrind \
-		./main
+		./output/main
