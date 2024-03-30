@@ -9,6 +9,8 @@ typedef struct game {
     int mine_count;
 
     char *board;
+    char mine_char;
+    char empy_char;
 } game_t;
 
 

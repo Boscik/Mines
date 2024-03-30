@@ -57,18 +57,12 @@ int main(int argc, char *argv[]) {
     /* dont print key pressses */
     noecho();
 
-    game_t *game = init_game(width, height, 16);
+
+
+    game_t *game = init_game(width, height, 3);
     screen_t *screen = init_screen(game);
 
-    /* If terminal supports colors */
-    if(has_colors()) {
-        /* Start color mode */
-        start_color();
-        /* Create color pair */
-        init_pair(1, COLOR_CYAN, COLOR_BLACK);
-        /* Set color pair */
-        attron(COLOR_PAIR(1));
-    }
+    draw_state(screen);
 
     init_pair(2, COLOR_RED, COLOR_BLACK);
 
