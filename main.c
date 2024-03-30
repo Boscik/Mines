@@ -1,7 +1,7 @@
-#include <ncurses.h>
-#include <unistd.h>
 #include <stdlib.h>
-#include <time.h>
+
+#include "game.h"
+#include "draw.h"
 
 static const int width = 5;
 static const int height = 5;

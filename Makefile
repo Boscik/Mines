@@ -1,5 +1,13 @@
+Filelist = \
+main.c \
+draw.h \
+draw.c \
+game.h \
+game.c \
+
+
 make:
-	cc -o main main.c -lncurses -ansi
+	cc -o main $(Filelist) -lncurses -ansi
 
 clean:
 	rm main
