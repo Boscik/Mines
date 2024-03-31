@@ -14,6 +14,10 @@ int main(int argc, char *argv[]) {
     int width = atoi(argv[1]);
     int height = atoi(argv[2]);
     int mine_count = atoi(argv[3]);
+    if(width == 0 || height == 0) {
+        fprintf(stderr, "Invalid dimensions\n");
+        return 1;
+    }
     if(mine_count > width*height) {
         fprintf(stderr, "Number of mines must be lower or equal to the board size\n");
         return 1;
