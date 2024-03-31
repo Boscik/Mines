@@ -4,16 +4,25 @@
 #include "draw.h"
 #include "controller.h"
 
-static const int width = 5;
-static const int height = 5;
-static const int board_size = width*height;
-
 int main(int argc, char *argv[]) {
+    if(argc != 4) {
+        fprintf(stderr, "Wrong arguments provided\n");
+        fprintf(stderr, "Run with: %s [width] [height] [number of mines]\n", argv[0]);
+        return 1;
+    }
+    
+    int width = atoi(argv[1]);
+    int height = atoi(argv[2]);
+    int mine_count = atoi(argv[3]);
+    if(mine_count > width*height) {
+        fprintf(stderr, "Number of mines must be lower or equal to the board size\n");
+        return 1;
+    }
 
     /* dont print key pressses */
     noecho();
 
-    game_t *game = init_game(width, height, 3);
+    game_t *game = init_game(width, height, mine_count);
     screen_t *screen = init_screen(game);
 
     draw_state(screen);

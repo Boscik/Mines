@@ -20,7 +20,7 @@ clean:
 	rm output/*
 
 run: compile
-	./output/main
+	./output/main 20 15 40
 
 leak-check: compile
 	valgrind --leak-check=yes \
@@ -28,4 +28,4 @@ leak-check: compile
         --track-origins=yes \
 		--show-reachable=no \
         --verbose \
-		echo q > ./output/main
+		echo q > ./output/main 20 15 40
