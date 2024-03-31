@@ -5,6 +5,7 @@ void set_board_to(game_t *game, char *board, char c);
 void set_mines(game_t *game, int mine_count);
 void set_numbers_around(game_t *game, int position);
 void reveal_board(game_t *game);
+void reveal_tiles_around(game_t *game, int position, short *checked_tiles);
 
 game_t *init_game(int width, int height, int mine_count) {
     game_t *game = (game_t *)malloc(sizeof(game_t));
@@ -68,7 +69,7 @@ void set_numbers_around(game_t *game, int position) {
             if(k/width != i/width) continue;
 
             /* check bounds */
-            if(i >= 0 && i != position) {
+            if(i >= 0 && i <= board_size && i != position) {
                 
                 if(game->board[i] != game->mine_char) {
                     if(game->board[i] == game->empy_char) {
@@ -89,9 +90,47 @@ int play_position(game_t *game, int position) {
         game->is_lost = 1;
         reveal_board(game);
     } else {
-        game->visible_board[position] =  game->board[position];
+        /* game->visible_board[position] =  game->board[position]; */
+        short *checked_tiles = (short *)malloc(game->board_size*sizeof(short));
+        int i;
+        for(i = 0; i < game->board_size; i++) {
+            checked_tiles[i] = 0;
+        }
+        reveal_tiles_around(game, position, checked_tiles);
+        free(checked_tiles);
     }
     return 1;
+}
+
+void reveal_tiles_around(game_t *game, int position, short *checked_tiles) {
+    if(game->board[position] == game->empy_char) {
+        game->visible_board[position] =  game->board[position];
+        checked_tiles[position] = 1;
+
+        /* TODO rewrite into a function*/
+        int board_size = game->board_size;
+        int width = game->width;
+        int k, i;
+
+        for(k = position-width; k <= position+width; k += width) {
+
+            /* check bounds */
+            if(k < 0 || k >= board_size) continue;
+
+            for(i = k-1; i <= k + 1; i++) {
+                /* check if line didn't overflow/underflow */
+                if(k/width != i/width) continue;
+
+                /* check bounds */
+                if(i >= 0 && i <= board_size && i != position && !checked_tiles[i]) {
+                    reveal_tiles_around(game, i, checked_tiles);
+                }
+            }
+        }
+    } else if (game->board[position] != game->mine_char){
+        game->visible_board[position] =  game->board[position];
+        checked_tiles[position] = 1;
+    }
 }
 
 int is_game_finished(game_t *game) {

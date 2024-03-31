@@ -34,10 +34,9 @@ int main(int argc, char *argv[]) {
 
         play_position(game, position);
         draw_state(screen);
-        refresh();
     }
 
-    getch();    
+    getch();
 
     echo();
     endwin();
