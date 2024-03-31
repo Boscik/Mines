@@ -1,8 +1,8 @@
 #include "draw.h"
 #include <stdlib.h>
 
-static const tile_height = 3;
 static const tile_width = 5;
+static const tile_height = 3;
 
 void init_colors();
 
@@ -11,6 +11,9 @@ screen_t *init_screen(game_t *game) {
     screen->tiles = (WINDOW **)malloc(game->board_size * sizeof(WINDOW *));
     screen->main_window = initscr();
     screen->game = game;
+
+    screen->tile_width = 3;
+    screen->tile_height = 5;
 
     int width = game->width;
     int i;
@@ -25,8 +28,6 @@ screen_t *init_screen(game_t *game) {
         screen->tiles[i] = tile;
     }
 
-    /* init_colors(); */
-
     return screen;
 }
 void draw_state(screen_t *screen) {
@@ -38,11 +39,11 @@ void draw_state(screen_t *screen) {
         start_color();
     }
 
-    /* init_colors(); */
+    init_colors();
     for(i = 0; i < screen->game->board_size; i++) {
 
         char c[1];
-        c[0] = screen->game->board[i];
+        c[0] = screen->game->visible_board[i];
 
         if(c[0] == screen->game->mine_char) {
             wattron(screen->tiles[i], COLOR_PAIR(2));
@@ -50,7 +51,6 @@ void draw_state(screen_t *screen) {
             /* TODO */
         } else {
             int color_pair_index = ((c[0]-'0')%4)+3;
-            printf("\rcolor pair index %c %d\n", c[0], color_pair_index);
             wattron(screen->tiles[i], COLOR_PAIR(color_pair_index));
         }
         /* set tile text */
@@ -58,7 +58,9 @@ void draw_state(screen_t *screen) {
         
         /* Create box to draw the tile */
         box(screen->tiles[i], 0, 0);
+        wrefresh(screen->tiles[i]);
     }
+    wrefresh(screen->main_window);
 }
 
 void init_colors() {

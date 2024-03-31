@@ -7,6 +7,8 @@
 typedef struct screen {
     WINDOW * main_window;
     WINDOW ** tiles;
+    int tile_width;
+    int tile_height;
 
     game_t *game;
 } screen_t;

@@ -4,10 +4,13 @@ draw.h \
 draw.c \
 game.h \
 game.c \
+controller.h \
+controller.c
 
 C_FLAGS = \
 -ansi \
--g \
+-ggdb \
+-O0
 
 compile:
 	mkdir -p output

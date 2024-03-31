@@ -1,9 +1,10 @@
 #include "game.h"
 #include <stdlib.h>
 
-void set_board_to(game_t *game, char c);
+void set_board_to(game_t *game, char *board, char c);
 void set_mines(game_t *game, int mine_count);
 void set_numbers_around(game_t *game, int position);
+void reveal_board(game_t *game);
 
 game_t *init_game(int width, int height, int mine_count) {
     game_t *game = (game_t *)malloc(sizeof(game_t));
@@ -14,20 +15,25 @@ game_t *init_game(int width, int height, int mine_count) {
     game->mine_count = mine_count;
     
     game->board = (char *)malloc(game->board_size * sizeof(char));
+    game->visible_board = (char *)malloc(game->board_size * sizeof(char));
 
     game->mine_char = 'x';
-    game->empy_char = ' ';
+    game->empy_char = '_';
+    game->unrevealed_char = ' ';
 
-    set_board_to(game, game->empy_char);
+    game->is_lost = 0;
+
+    set_board_to(game, game->board, game->empy_char);
+    set_board_to(game, game->visible_board, game->unrevealed_char);
     set_mines(game, mine_count);
 
     return game;
 }
 
-void set_board_to(game_t *game, char c) {
+void set_board_to(game_t *game, char *board, char c) {
     int i;
     for(i = 0; i < game->board_size; i++) {
-        game->board[i] = c;
+        board[i] = c;
     }
 }
 
@@ -78,7 +84,22 @@ void set_numbers_around(game_t *game, int position) {
     }
 }
 
-void play_position(game_t *game, int arg_pos) {}
+int play_position(game_t *game, int position) {
+    if(game->board[position] == game->mine_char) {
+        game->is_lost = 1;
+        reveal_board(game);
+    } else {
+        game->visible_board[position] =  game->board[position];
+    }
+    return 1;
+}
+void reveal_board(game_t *game) {
+    int i;
+    for(i = 0; i < game->board_size; i++) {
+        game->visible_board[i] = game->board[i];
+    }
+}
+
 void terminate_game(game_t *game) {
     free(game->board);
     free(game);
