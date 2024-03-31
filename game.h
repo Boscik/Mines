@@ -1,6 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#define GAME_WON 1
+#define GAME_LOST 2
+
 typedef struct game {
     int board_size;
     int width;
@@ -22,5 +25,6 @@ typedef struct game {
 game_t *init_game(int width, int height, int mine_count);
 int play_position(game_t *game, int position);
 void terminate_game(game_t *game);
+int is_game_finished(game_t *game);
 
 #endif

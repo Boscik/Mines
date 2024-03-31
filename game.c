@@ -48,7 +48,7 @@ void set_mines(game_t *game, int mine_count) {
             game->board[pos] = game->mine_char;
             /* increment numbers around new mine */
             set_numbers_around(game, pos);
-            /* counter is initialized only if new mine was placed */
+            /* counter is incremented only if new mine was placed */
             counter++;
         }
     }
@@ -93,6 +93,23 @@ int play_position(game_t *game, int position) {
     }
     return 1;
 }
+
+int is_game_finished(game_t *game) {
+    int i;
+    if(game->is_lost) return GAME_LOST;
+
+    for(i = 0; i < game->board_size; i++) {
+        /* dont check for mines, those should not be revealed*/
+        if(game->board[i] != game->mine_char) {
+            if(game->board[i] != game->visible_board[i]) {
+                /* not all tiles were revealed*/
+                return 0;
+            }
+        }
+    }
+    return GAME_WON;
+}
+
 void reveal_board(game_t *game) {
     int i;
     for(i = 0; i < game->board_size; i++) {

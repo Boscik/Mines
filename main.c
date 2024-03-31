@@ -27,15 +27,18 @@ int main(int argc, char *argv[]) {
     init_pair(7, COLOR_RED+5, COLOR_BLACK);
 
 
-    int position;
-    do {
+    int position, result;
+    while ((result = is_game_finished(game)) == 0) {
+        position = get_mouse_click(screen);
+        if(position == -1) continue; /* invalid input */
+
+        play_position(game, position);
         draw_state(screen);
         refresh();
-        position = get_mouse_click(screen);
-    } while (play_position(game, position));
+    }
 
-    refresh();
-    
+    getch();    
+
     echo();
     endwin();
 
