@@ -16,5 +16,6 @@ typedef struct screen {
 screen_t *init_screen(game_t *game);
 void draw_state(screen_t *screen);
 void terminate_screen(screen_t *screen);
-
+WINDOW *draw_result_window(int result);
+void terminate_result_window(WINDOW *window);
 #endif

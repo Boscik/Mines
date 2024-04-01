@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "game.h"
 #include "draw.h"
@@ -14,7 +15,7 @@ int main(int argc, char *argv[]) {
     int width = atoi(argv[1]);
     int height = atoi(argv[2]);
     int mine_count = atoi(argv[3]);
-    if(width == 0 || height == 0) {
+    if(width < 0 || height < 0) {
         fprintf(stderr, "Invalid dimensions\n");
         return 1;
     }
@@ -31,32 +32,31 @@ int main(int argc, char *argv[]) {
 
     draw_state(screen);
 
-    init_pair(2, COLOR_RED, COLOR_BLACK);
-
-    init_pair(3, COLOR_RED+1, COLOR_BLACK);
-    init_pair(4, COLOR_RED+2, COLOR_BLACK);
-    init_pair(5, COLOR_RED+3, COLOR_BLACK);
-    init_pair(6, COLOR_RED+4, COLOR_BLACK);
-    init_pair(7, COLOR_RED+5, COLOR_BLACK);
-
-
     int position, result;
+    int exit = 0;
     while ((result = is_game_finished(game)) == 0) {
-        position = get_mouse_click(screen);
+        position = get_mouse_click(screen, &exit);
+        if(exit) break;
         if(position == -1) continue; /* invalid input */
 
         play_position(game, position);
         draw_state(screen);
     }
 
-    getch();
+    if(!exit) getch();
 
     echo();
-    endwin();
 
     terminate_screen(screen);
     terminate_game(game);
+
+    WINDOW *result_window =  draw_result_window(result);
+    if(!exit) getch();
     
+    terminate_result_window(result_window);
+    
+    endwin();
+
     return 0;
 }
 

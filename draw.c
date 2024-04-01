@@ -1,5 +1,6 @@
 #include "draw.h"
 #include <stdlib.h>
+#include <string.h>
 
 static const tile_width = 5;
 static const tile_height = 3;
@@ -46,9 +47,11 @@ void draw_state(screen_t *screen) {
         c[0] = screen->game->visible_board[i];
 
         if(c[0] == screen->game->mine_char) {
-            wattron(screen->tiles[i], COLOR_PAIR(2));
+            wattron(screen->tiles[i], COLOR_PAIR(1));
         } else if(c[0] == screen->game->empy_char) {
-            /* TODO */
+            wattron(screen->tiles[i], COLOR_PAIR(2));
+        } else if(c[0] == screen->game->unrevealed_char) {
+            wattron(screen->tiles[i], COLOR_PAIR(7));
         } else {
             int color_pair_index = ((c[0]-'0')%4)+3;
             wattron(screen->tiles[i], COLOR_PAIR(color_pair_index));
@@ -64,13 +67,14 @@ void draw_state(screen_t *screen) {
 }
 
 void init_colors() {
-    init_pair(2, COLOR_RED, COLOR_BLACK);
-
-    init_pair(3, COLOR_RED+1, COLOR_BLACK);
-    init_pair(4, COLOR_RED+2, COLOR_BLACK);
-    init_pair(5, COLOR_RED+3, COLOR_BLACK);
-    init_pair(6, COLOR_RED+4, COLOR_BLACK);
-    init_pair(7, COLOR_RED+5, COLOR_BLACK);
+    init_pair(0, COLOR_BLACK, COLOR_BLACK);
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(4, COLOR_BLUE, COLOR_BLACK);
+    init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(6, COLOR_CYAN, COLOR_BLACK);
+    init_pair(7, COLOR_WHITE, COLOR_BLACK);
 }
 
 void terminate_screen(screen_t *screen) {
@@ -83,4 +87,25 @@ void terminate_screen(screen_t *screen) {
     }
     free(screen->tiles);
     free(screen);
+}
+
+WINDOW *draw_result_window(int result) {
+    WINDOW *result_window = initscr();
+    /* clear artifacts from previous windows*/
+    wclear(result_window);
+
+    int y, x;
+    getmaxyx(result_window, y, x);
+
+    char * result_string;
+    result_string = (result == GAME_WON) ? "Game won" : "Game lost";
+    
+    box(result_window, 0, 0);
+    /* add centered string */
+    mvwaddstr(result_window, y/2, (x-strlen(result_string))/2, result_string);
+    return result_window;
+}
+
+void terminate_result_window(WINDOW *window) {
+    delwin(window);
 }
